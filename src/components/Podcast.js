@@ -40,7 +40,7 @@ const Podcast = (props) => {
                             </div>
                             <div className={right}>
                                 <h3>{podcast.title}</h3>
-                                <p>{podcast.url}</p>
+                                <a href={podcast.url}>{podcast.url}</a><br/>
                                 <Link to={"podcast/" + podcast.id} className="btn btn-success">Lihat >></Link>
                             </div>
                         </div>

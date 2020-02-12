@@ -40,26 +40,27 @@ const DetailPodcasts = (props) => {
                     </div>
                     <div className={right}>
                         <h3>{podcast[0]["title"]}</h3>
-                        <p>{podcast[0]["url"]}</p>
+
+                        <a href={podcast[0]["url"]}>{podcast[0]["url"]}</a>
                         {podcast[0]["epidodes"] && (
                             <p>Episodes</p>
                         )}
 
+                        <ul>
+                            {podcast[0]["episodes"] && (
+                                podcast[0]["episodes"].map((episodes, index) =>
 
-                        {podcast[0]["episodes"] && (
-                            podcast[0]["episodes"].map((episodes, index) =>
 
+                                    <li style={{ listStyle: "none" }} className="list-group mt-1" key={episodes.id}>
+                                        <audio controls>
+                                            <source src={episodes.audio} type="audio/mpeg" />
+                                        </audio>
+                                    </li>
 
-                                <li style={{ listStyle: "none" }} className="list-group mt-1">
-                                    <audio controls>
-                                        <source src={episodes.audio} type="audio/mpeg" />
-                                    </audio>
-                                </li>
+                                )
 
-                            )
-
-                        )}
-
+                            )}
+                        </ul>
                         <Link to={"/"} className="btn btn-success mt-1" > Kembali</Link>
                     </div>
 
