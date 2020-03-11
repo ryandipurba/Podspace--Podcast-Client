@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from "@reach/router";
 import { css } from "emotion";
-
-
+import { connect } from 'react-redux';
 
 const row = css({
     display: "flex",
@@ -24,53 +23,50 @@ const right = css({
 })
 
 const DetailPodcasts = (props) => {
-
-
-    const podcast = props.podcast.filter(function (podcast) {
-        return podcast.id === parseInt(props.id);
-    });
-
-    return (
+    const pod = props.pod ? (
         <>
-            {podcast.length === 1 && (
-                <div className={row} >
+            <div className={left}>
+                <img src={parseInt(props.podcast_id) === 1 ? 'https://ceritanyadeveloper.com/static/images/logo-2020.png' : props.pod.thumbnail} alt="asd" width="50%" />
+            </div>
+            <div className={right}>
+                <h3>{props.pod.title}</h3>
 
-                    <div className={left}>
-                        <img src={parseInt(props.id) === 1 ? 'https://ceritanyadeveloper.com/static/images/logo-2020.png' : podcast[0]["thumbnail"]} alt="asd" width="50%" />
-                    </div>
-                    <div className={right}>
-                        <h3>{podcast[0]["title"]}</h3>
+                <a href={props.pod.url}>{props.pod.url}</a>
+                {props.pod.episodes && (
+                    <p>Episodes</p>
+                )}
 
-                        <a href={podcast[0]["url"]}>{podcast[0]["url"]}</a>
-                        {podcast[0]["epidodes"] && (
-                            <p>Episodes</p>
-                        )}
+                <ul>
+                    {props.pod.episodes && (
+                        props.pod.episodes.map((episodes, index) =>
+                            <li style={{ listStyle: "none" }} className="list-group mt-1" key={episodes.id}>
+                                <audio controls>
+                                    <source src={episodes.audio} type="audio/mpeg" />
+                                </audio>
+                            </li>
 
-                        <ul>
-                            {podcast[0]["episodes"] && (
-                                podcast[0]["episodes"].map((episodes, index) =>
+                        )
 
-
-                                    <li style={{ listStyle: "none" }} className="list-group mt-1" key={episodes.id}>
-                                        <audio controls>
-                                            <source src={episodes.audio} type="audio/mpeg" />
-                                        </audio>
-                                    </li>
-
-                                )
-
-                            )}
-                        </ul>
-                        <Link to={"/"} className="btn btn-success mt-1" > Kembali</Link>
-                    </div>
-
-
-                </div >
-            )}
+                    )}
+                </ul>
+                <Link to={"/"} className="btn btn-success mt-1" > Kembali</Link>
+            </div>
         </>
-
-
+    ) : (
+            <div>>no podcast</div>
+        )
+    return (
+        <div className={row} >
+            {pod}
+        </div >
     );
 };
 
-export default DetailPodcasts;
+const mapStateToProps = (state, ownProps) => {
+    let id = ownProps.match.params.podcast_id;
+    return {
+        pod: state.podcast.find(pod => pod.id === id)
+    }
+}
+
+export default connect(mapStateToProps)(DetailPodcasts);

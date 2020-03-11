@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from "@reach/router";
 import { css } from 'emotion';
-
-const isSearched = searchTerm => item => item.title.toLowerCase().includes(searchTerm.toLowerCase())
-
+import { connect } from 'react-redux';
 
 const row = css({
     display: "flex",
@@ -24,32 +22,40 @@ const right = css({
 
 })
 
-const Podcast = (props) => {
-
-    return (
-        <div>
-            {!props.loading ? (
-                <p>loading.....</p>
-            ) :
-                (props.podcast
-                    .filter(isSearched(props.searchInput))
-                    .map((podcast) =>
-                        <div className={row} key={podcast.id}>
-                            <div className={left}>
-                                <img src={podcast.id === 1 ? 'https://ceritanyadeveloper.com/static/images/logo-2020.png' : podcast.thumbnail} alt={podcast.title} width="50%" />
-                            </div>
-                            <div className={right}>
-                                <h3>{podcast.title}</h3>
-                                <a href={podcast.url}>{podcast.url}</a><br/>
-                                <Link to={"podcast/" + podcast.id} className="btn btn-success">Lihat >></Link>
-                            </div>
+class Podcast extends Component {
+    render() {
+        const { podcast } = this.props
+        const podcastList = podcast.length ? (
+            podcast.map(pod => {
+                return (
+                    <div className={row} key={pod.id}>
+                        <div className={left}>
+                            <img src={pod.id === 1 ? 'https://ceritanyadeveloper.com/static/images/logo-2020.png' : pod.thumbnail} alt={pod.title} width="50%" />
                         </div>
-
-                    )
+                        <div className={right}>
+                            <h3>{pod.title}</h3>
+                            <a href={pod.url}>{pod.url}</a><br />
+                            <Link to={"podcast/" + pod.id} className="btn btn-success">Lihat >></Link>
+                        </div>
+                    </div>
                 )
-            }
-        </div>
-    );
-};
+            })
+        ) : (
+                <div>No Podcast to Show</div>
+            )
+        return (
+            <div>
+                {podcastList}
+            </div>
+        )
 
-export default Podcast;
+    }
+}
+const mapStateToProps = (state) => {
+    return {
+        podcast: state.podcast
+    }
+}
+
+
+export default connect(mapStateToProps)(Podcast);
